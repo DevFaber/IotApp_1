@@ -8,7 +8,7 @@ import firebase from 'firebase';
 const app = express();
 
 const admin = require('firebase-admin');
-const serviceAccount = require('../fabertech-iot-firebase-adminsdk-ems62-61de4fb3f2');
+const serviceAccount = require('../fabertechMode.json');
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
@@ -36,17 +36,24 @@ board.on('ready', () => {
     led,
   });
 
+  // Verificação de email
+
   // Finalizado UserCreate no Firebase
   app.post('/users', function(req, res) {
-    const newUser = {
+    const userData = {
       name: req.body.name,
       email: req.body.email,
       password: req.body.password,
     };
 
-    db.ref('usuarios').push(newUser);
+    const user = db.ref('usuarios').push(userData);
 
-    return res.json(newUser);
+    const userId = user.key;
+
+    return res.json({
+      userData,
+      userId,
+    });
   });
 
   //Finalizado UserList no Firebase
